@@ -16,7 +16,7 @@ let package = Package(
         .library(
             name: "HttpRequestAlamofire",
             targets: ["HttpRequestAlamofire"]),
-        ,
+    
     ],
     dependencies: [
         //         Dependencies declare other packages that this package depends on.
