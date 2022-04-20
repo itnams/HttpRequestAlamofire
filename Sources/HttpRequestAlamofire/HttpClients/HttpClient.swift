@@ -1,21 +1,15 @@
-//
-//  File.swift
-//
-//
-//  Created by ERM on 20/04/2022.
-//
 
+#if !os(macOS)
 import Alamofire
 import Combine
-#if !os(macOS)
 import UIKit
+
 // MARK: Progress
 
 public typealias RequestProgressHandler = (IRequest, Progress) -> Void
 
 // MARK: IHttpClient
 
-@available(iOS 13.0, *)
 public protocol IHttpClient: class {
     /**
      Execute request and return publisher
@@ -23,7 +17,6 @@ public protocol IHttpClient: class {
      - Parameter DataResponsePublisher<T>: Publisher will emit output from the request to all subcribers
      */
     
-    @available(macOS 10.15, *)
     func execute<T: IResponse>(request: IRequest) -> AnyPublisher<T, Error>
     /**
      cancel request
@@ -33,7 +26,6 @@ public protocol IHttpClient: class {
 
 // MARK: HttpClient
 
-@available(iOS 13.0, *)
 open class HttpClient: IHttpClient {
     fileprivate let hostUrl: String
     fileprivate let session: Alamofire.Session
@@ -69,6 +61,8 @@ open class HttpClient: IHttpClient {
             fatalError("Failed to create request URL: \(requestURLPath)")
         }
         
+        /// log
+        print("REQUEST: \n" + toString((request as? CustomStringConvertible)?.description))
         print("\n\n")
         
         /// update session information from request
@@ -193,4 +187,5 @@ extension HttpParameterEncoding {
         }
     }
 }
+#error("This package does not support macOS.")
 #endif

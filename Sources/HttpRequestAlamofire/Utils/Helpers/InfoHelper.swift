@@ -1,9 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by ERM on 20/04/2022.
-//
 
 #if !os(macOS)
 import Alamofire
@@ -140,4 +134,5 @@ extension Int{
         return self
     }
 }
+#error("This package does not support macOS.")
 #endif

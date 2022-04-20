@@ -1,22 +1,18 @@
-//
-//  File.swift
-//  
-//
-//  Created by ERM on 20/04/2022.
-//
 
-import Foundation
+import Alamofire
 import Combine
 import Foundation
-import Alamofire
 
+/**
+ Object is received after execute IRequest via IHttpClient
+ */
 public protocol IResponse {
     var success: Bool { get }
     var message: String { get }
     var messages: [String] { get }
     var error: RequestError { get }
     init(_ response: AFDataResponse<Any>?)
-    
+
     /// special instances for exception cases
     static func error(with error: RequestError) -> Self
     static func unknown() -> Self
@@ -37,75 +33,75 @@ open class Response: IResponse {
     public var message: String = ""
     public var error: RequestError = .undefined
     internal var serverError: ServerError = .undefined
-    
+
     public required init(_ response: AFDataResponse<Any>? = nil) {
         switch response?.result {
-            /// parse JSON to get information here
+        /// parse JSON to get information here
         case let .success(value):
-            //            debugPrint("[Response]: \(value)")
+//            debugPrint("[Response]: \(value)")
             parseJson(value)
-            //            if !checkErrorClientResponse(response) {
-            //                parseJson(value)
-            //            } else {
-            //                self.success = false
-            //            }
-            /// handle network error
+//            if !checkErrorClientResponse(response) {
+//                parseJson(value)
+//            } else {
+//                self.success = false
+//            }
+        /// handle network error
         case let .failure(error):
-            //            debugPrint(".failure")
+//            debugPrint(".failure")
             parseError(error)
-            
+
         default: break
         }
     }
-    
+
     public required init(with error: RequestError) {
         self.error = error
     }
-    
+
     /// template methods for parsing JSON data
     open func parseJson(_ json: Any) {}
-    
+
     /// template methods for parsing error
     open func parseError(_ error: AFError) {
-#if DEBUG
-        self.error = .client(error.errorDescription ?? "")
-#else
-        self.error = .undefined
-#endif
+        #if DEBUG
+            self.error = .client(error.errorDescription ?? "")
+        #else
+            self.error = .undefined
+        #endif
     }
-    
+
     /// special instances for exception cases
     public static func error(with error: RequestError) -> Self {
         return self.init(with: error)
     }
-    
+
     public static func unknown() -> Self {
         return self.init()
     }
-    
-    //    private func checkErrorClientResponse(_ response: AFDataResponse<Any>?) -> Bool {
-    //        do {
-    //            guard let data = response?.data else {
-    //                return true
-    //            }
-    //            let errorResponse = try JSONDecoder().decode(ErrorClientResponse.self, from: data)
-    //
-    //            if let isSuccess = errorResponse.success  {
-    //                if !isSuccess {
-    //                    errorResponse.messages?.forEach { message in
-    //                        messages.append(message)
-    //                    }
-    //                    error = RequestError.client(errorResponse.message ?? "Unknown")
-    //                    return true
-    //                }
-    //            }
-    //            return false
-    //            // TODO: handle "message" Key
-    //
-    //        } catch {
-    //            return true
-    //        }
-    //    }
+
+//    private func checkErrorClientResponse(_ response: AFDataResponse<Any>?) -> Bool {
+//        do {
+//            guard let data = response?.data else {
+//                return true
+//            }
+//            let errorResponse = try JSONDecoder().decode(ErrorClientResponse.self, from: data)
+//
+//            if let isSuccess = errorResponse.success  {
+//                if !isSuccess {
+//                    errorResponse.messages?.forEach { message in
+//                        messages.append(message)
+//                    }
+//                    error = RequestError.client(errorResponse.message ?? "Unknown")
+//                    return true
+//                }
+//            }
+//            return false
+//            // TODO: handle "message" Key
+//
+//        } catch {
+//            return true
+//        }
+//    }
 }
 
 // MARK: - ErrorClientResponse
