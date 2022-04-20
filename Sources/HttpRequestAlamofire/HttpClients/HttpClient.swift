@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by ERM on 20/04/2022.
 //
@@ -15,6 +15,7 @@ public typealias RequestProgressHandler = (IRequest, Progress) -> Void
 
 // MARK: IHttpClient
 
+@available(iOS 13.0, *)
 public protocol IHttpClient: class {
     /**
      Execute request and return publisher
@@ -32,6 +33,7 @@ public protocol IHttpClient: class {
 
 // MARK: HttpClient
 
+@available(iOS 13.0, *)
 open class HttpClient: IHttpClient {
     fileprivate let hostUrl: String
     fileprivate let session: Alamofire.Session
@@ -67,8 +69,6 @@ open class HttpClient: IHttpClient {
             fatalError("Failed to create request URL: \(requestURLPath)")
         }
         
-        /// log
-        print("REQUEST: \n" + toString((request as? CustomStringConvertible)?.description))
         print("\n\n")
         
         /// update session information from request
